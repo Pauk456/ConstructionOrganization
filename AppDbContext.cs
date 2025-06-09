@@ -6,7 +6,7 @@ namespace ConstructionOrganizations;
 
 public class AppDbContext : DbContext
 {
-    public virtual DbSet<ConstructionOrganization> Organizations { get; set; } = null!;
+    public DbSet<ConstructionOrganization> Organizations { get; set; } = null!;
     public DbSet<ConstructionDepartment> Departments { get; set; } = null!;
     public DbSet<ConstructionProject> Projects { get; set; } = null!;
     public DbSet<EmployeeType> EmployeeTypes { get; set; } = null!;
@@ -29,12 +29,5 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
-    }
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<ConstructionOrganization>()
-            .ToTable("сonstructionorganization", schema: "public");
-
-        base.OnModelCreating(modelBuilder);
     }
 }
