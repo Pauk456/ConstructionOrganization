@@ -1,24 +1,27 @@
-﻿namespace ConstructionOrganizations.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-// Models/ConstructionOrganization.cs
+namespace ConstructionOrganizations.Models;
+
 public class ConstructionOrganization
 {
+    [Key]
+    [Column("id")]
     public int Id { get; set; }
-    public string Name { get; set; } = null!;
-    public ICollection<ConstructionDepartment> Departments { get; set; } = new List<ConstructionDepartment>();
+
+    [Column("name")]
+    public string Name { get; set; }
 }
 
-// Models/ConstructionDepartment.cs
 public class ConstructionDepartment
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public int OrganizationId { get; set; }
-    public ConstructionOrganization Organization { get; set; } = null!;
+    public Models.ConstructionOrganization Organization { get; set; } = null!;
     public ICollection<ConstructionProject> Projects { get; set; } = new List<ConstructionProject>();
 }
 
-// Models/ConstructionProject.cs
 public class ConstructionProject
 {
     public int Id { get; set; }
@@ -29,8 +32,6 @@ public class ConstructionProject
     public ICollection<EmployeeAssignment> EmployeeAssignments { get; set; } = new List<EmployeeAssignment>();
     public ICollection<Object> Objects { get; set; } = new List<Object>();
 }
-
-// Models/EmployeeType.cs
 public class EmployeeType
 {
     public int Id { get; set; }
@@ -39,7 +40,6 @@ public class EmployeeType
     public ICollection<Employee> Employees { get; set; } = new List<Employee>();
 }
 
-// Models/Position.cs
 public class Position
 {
     public int Id { get; set; }
@@ -48,7 +48,6 @@ public class Position
     public ICollection<Employee> Employees { get; set; } = new List<Employee>();
 }
 
-// Models/Employee.cs
 public class Employee
 {
     public int Id { get; set; }
@@ -63,7 +62,6 @@ public class Employee
     public ICollection<EmployeeAssignment> EmployeeAssignments { get; set; } = new List<EmployeeAssignment>();
 }
 
-// Models/ObjectType.cs
 public class ObjectType
 {
     public int Id { get; set; }
@@ -72,7 +70,6 @@ public class ObjectType
     public ICollection<Object> Objects { get; set; } = new List<Object>();
 }
 
-// Models/Object.cs
 public class Object
 {
     public int Id { get; set; }
@@ -91,7 +88,6 @@ public class Object
     public ICollection<EquipmentAssignment> EquipmentAssignments { get; set; } = new List<EquipmentAssignment>();
 }
 
-// Models/Brigade.cs
 public class Brigade
 {
     public int Id { get; set; }
@@ -100,7 +96,6 @@ public class Brigade
     public ICollection<BrigadeWorkAssignment> Assignments { get; set; } = new List<BrigadeWorkAssignment>();
 }
 
-// Models/BrigadeMember.cs
 public class BrigadeMember
 {
     public int Id { get; set; }
@@ -110,7 +105,6 @@ public class BrigadeMember
     public Employee Employee { get; set; } = null!;
 }
 
-// Models/ObjectAttribute.cs
 public class ObjectAttribute
 {
     public int Id { get; set; }
@@ -120,7 +114,6 @@ public class ObjectAttribute
     public long AttributeValue { get; set; }
 }
 
-// Models/WorkType.cs
 public class WorkType
 {
     public int Id { get; set; }
@@ -129,7 +122,6 @@ public class WorkType
     public ICollection<WorkSchedule> WorkSchedules { get; set; } = new List<WorkSchedule>();
 }
 
-// Models/WorkSchedule.cs
 public class WorkSchedule
 {
     public int Id { get; set; }
@@ -146,7 +138,6 @@ public class WorkSchedule
     public ICollection<BrigadeWorkAssignment> BrigadeAssignments { get; set; } = new List<BrigadeWorkAssignment>();
 }
 
-// Models/MaterialEstimate.cs
 public class MaterialEstimate
 {
     public int Id { get; set; }
@@ -156,7 +147,6 @@ public class MaterialEstimate
     public long MaterialCount { get; set; }
 }
 
-// Models/MaterialUsage.cs
 public class MaterialUsage
 {
     public int Id { get; set; }
@@ -168,7 +158,6 @@ public class MaterialUsage
     public long MaterialCount { get; set; }
 }
 
-// Models/Equipment.cs
 public class Equipment
 {
     public int Id { get; set; }
@@ -180,7 +169,6 @@ public class Equipment
     public ICollection<EquipmentAssignment> Assignments { get; set; } = new List<EquipmentAssignment>();
 }
 
-// Models/EquipmentAssignment.cs
 public class EquipmentAssignment
 {
     public int Id { get; set; }
@@ -192,7 +180,6 @@ public class EquipmentAssignment
     public DateTime? ReturnedDate { get; set; }
 }
 
-// Models/BrigadeWorkAssignment.cs
 public class BrigadeWorkAssignment
 {
     public int Id { get; set; }
@@ -204,7 +191,6 @@ public class BrigadeWorkAssignment
     public DateTime? CompletedDate { get; set; }
 }
 
-// Models/EmployeeAssignment.cs
 public class EmployeeAssignment
 {
     public int Id { get; set; }
