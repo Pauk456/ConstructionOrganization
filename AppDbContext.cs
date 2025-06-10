@@ -15,17 +15,12 @@ public class AppDbContext : DbContext
     public DbSet<ObjectType> ObjectTypes { get; set; } = null!;
     public DbSet<ConstructionOrganizations.Models.Object> Objects { get; set; } = null!;
     public DbSet<Brigade> Brigades { get; set; } = null!;
-    public DbSet<BrigadeMember> BrigadeMembers { get; set; } = null!;
     public DbSet<ObjectAttribute> ObjectAttributes { get; set; } = null!;
     public DbSet<WorkType> WorkTypes { get; set; } = null!;
     public DbSet<WorkSchedule> WorkSchedules { get; set; } = null!;
     public DbSet<MaterialEstimate> MaterialEstimates { get; set; } = null!;
     public DbSet<MaterialUsage> MaterialUsages { get; set; } = null!;
     public DbSet<Equipment> Equipments { get; set; } = null!;
-    public DbSet<EquipmentAssignment> EquipmentAssignments { get; set; } = null!;
-    public DbSet<BrigadeWorkAssignment> BrigadeWorkAssignments { get; set; } = null!;
-    public DbSet<EmployeeAssignment> EmployeeAssignments { get; set; } = null!;
-
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
@@ -33,6 +28,21 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Brigade>()
+            .HasMany(b => b.Members)
+            .WithOne(m => m.Brigade)
+            .HasForeignKey(m => m.BrigadeId);
+
+        modelBuilder.Entity<Employee>()
+            .HasMany(e => e.BrigadeMemberships)
+            .WithOne(m => m.Employee)
+            .HasForeignKey(m => m.EmployeeId);
+
+        modelBuilder.Entity<Employee>()
+            .HasMany(e => e.EmployeeAssignments)
+            .WithOne(m => m.Employee)
+            .HasForeignKey(m => m.ProjectId);
+
         modelBuilder.Entity<ConstructionOrganization>().HasData(
             new ConstructionOrganization { Id = 1, Name = "Организация Тест" }
         );

@@ -32,16 +32,12 @@ public class MainController : ControllerBase
             ["projects"] = _context.Projects.AsQueryable(),
             ["employees"] = _context.Employees.AsQueryable(),
             ["brigades"] = _context.Brigades.AsQueryable(),
-            ["brigademembers"] = _context.BrigadeMembers.AsQueryable(),
             ["objects"] = _context.Objects.AsQueryable(),
             ["objectattributes"] = _context.ObjectAttributes.AsQueryable(),
             ["workschedules"] = _context.WorkSchedules.AsQueryable(),
             ["materialestimates"] = _context.MaterialEstimates.AsQueryable(),
             ["materialusages"] = _context.MaterialUsages.AsQueryable(),
-            ["equipments"] = _context.Equipments.AsQueryable(),
-            ["equipmentassignments"] = _context.EquipmentAssignments.AsQueryable(),
-            ["brigadeworkassignments"] = _context.BrigadeWorkAssignments.AsQueryable(),
-            ["employeeassignments"] = _context.EmployeeAssignments.AsQueryable()
+            ["equipments"] = _context.Equipments.AsQueryable()
         };
 
     }

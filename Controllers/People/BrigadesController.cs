@@ -10,40 +10,51 @@ public class BrigadesController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public BrigadesController(AppDbContext context)
-    {
-        _context = context;
-    }
+    public BrigadesController(AppDbContext context) => _context = context;
 
     [HttpPost("post")]
-    public async Task<ActionResult> Create([FromBody] Employee employee)
+    public async Task<ActionResult> Create([FromBody] Brigade brigade)
     {
-        _context.Employees.Add(employee);
-
+        _context.Brigades.Add(brigade);
         await _context.SaveChangesAsync();
-        return Ok(employee);
+        return Ok(brigade);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(int id, [FromBody] Employee employee)
+    [HttpPost("add-member")]
+    public async Task<IActionResult> AddMember(int brigadeId, int employeeId)
     {
-        if (id != employee.Id) return BadRequest();
+        var brigade = await _context.Brigades
+            .Include(b => b.Members)
+            .FirstOrDefaultAsync(b => b.Id == brigadeId);
 
-        var existingEmployee = await _context.Employees
-            .FirstOrDefaultAsync(e => e.Id == id);
+        var employee = await _context.Employees
+            .Include(e => e.Brigades)
+            .FirstOrDefaultAsync(e => e.Id == employeeId);
 
-        if (existingEmployee == null)
-        {
-            return NotFound("Сотрудник не найден.");
-        }
+        if (brigade == null || employee == null)
+            return NotFound();
 
-        existingEmployee.FirstName = employee.FirstName;
-        existingEmployee.LastName = employee.LastName;
-        existingEmployee.EmployeeTypeId = employee.EmployeeTypeId;
-        existingEmployee.PositionId = employee.PositionId;
-
+        brigade.Members.Add(employee);
         await _context.SaveChangesAsync();
+        return Ok();
+    }
 
+    [HttpDelete("remove-member")]
+    public async Task<IActionResult> RemoveMember(int brigadeId, int employeeId)
+    {
+        var brigade = await _context.Brigades
+            .Include(b => b.Members)
+            .FirstOrDefaultAsync(b => b.Id == brigadeId);
+
+        if (brigade == null)
+            return NotFound();
+
+        var employee = brigade.Members.FirstOrDefault(e => e.Id == employeeId);
+        if (employee == null)
+            return NotFound();
+
+        brigade.Members.Remove(employee);
+        await _context.SaveChangesAsync();
         return Ok();
     }
 }

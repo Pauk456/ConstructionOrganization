@@ -57,6 +57,8 @@ public class ConstructionProject
 
     [ForeignKey("DepartmentId")]
     public ConstructionDepartment? Department { get; set; }
+    public ICollection<EmployeeAssignment> EmployeeAssignments { get; set; } = new List<EmployeeAssignment>();
+
 }
 
 [Table("EmployeeTypes")]
@@ -175,7 +177,6 @@ public class Object
     public ICollection<WorkSchedule> WorkSchedules { get; set; } = new List<WorkSchedule>();
     public ICollection<MaterialEstimate> MaterialEstimates { get; set; } = new List<MaterialEstimate>();
     public ICollection<MaterialUsage> MaterialUsages { get; set; } = new List<MaterialUsage>();
-    public ICollection<EquipmentAssignment> EquipmentAssignments { get; set; } = new List<EquipmentAssignment>();
 }
 
 [Table("Brigades")]
@@ -187,28 +188,6 @@ public class Brigade
     public int Id { get; set; }
 
     public ICollection<BrigadeMember> Members { get; set; } = new List<BrigadeMember>();
-    public ICollection<BrigadeWorkAssignment> Assignments { get; set; } = new List<BrigadeWorkAssignment>();
-}
-
-[Table("BrigadeMembers")]
-public class BrigadeMember
-{
-    [Key]
-    [Column("Id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
-    [Column("BrigadeId")]
-    public int? BrigadeId { get; set; }
-
-    [ForeignKey("BrigadeId")]
-    public Brigade? Brigade { get; set; }
-
-    [Column("EmployeeId")]
-    public int? EmployeeId { get; set; }
-
-    [ForeignKey("EmployeeId")]
-    public Employee? Employee { get; set; }
 }
 
 [Table("ObjectAttributes")]
@@ -286,7 +265,6 @@ public class WorkSchedule
     public DateTime? ActualEndDate { get; set; }
 
     public ICollection<MaterialUsage> MaterialUsages { get; set; } = new List<MaterialUsage>();
-    public ICollection<BrigadeWorkAssignment> BrigadeAssignments { get; set; } = new List<BrigadeWorkAssignment>();
 }
 
 [Table("MaterialEstimates")]
@@ -365,83 +343,4 @@ public class Equipment
     [Required]
     [Column("EquipmentCount")]
     public int EquipmentCount { get; set; }
-
-    public ICollection<EquipmentAssignment> Assignments { get; set; } = new List<EquipmentAssignment>();
-}
-
-[Table("EquipmentAssignments")]
-public class EquipmentAssignment
-{
-    [Key]
-    [Column("Id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
-    [Column("EquipmentId")]
-    public int? EquipmentId { get; set; }
-
-    [ForeignKey("EquipmentId")]
-    public Equipment? Equipment { get; set; }
-
-    [Column("ObjectId")]
-    public int? ObjectId { get; set; }
-
-    [ForeignKey("ObjectId")]
-    public Object? Object { get; set; }
-
-    [Required]
-    [Column("AssignedDate")]
-    public DateTime AssignedDate { get; set; }
-
-    [Column("ReturnedDate")]
-    public DateTime? ReturnedDate { get; set; }
-}
-
-[Table("BrigadeWorkAssignments")]
-public class BrigadeWorkAssignment
-{
-    [Key]
-    [Column("Id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
-    [Column("BrigadeId")]
-    public int? BrigadeId { get; set; }
-
-    [ForeignKey("BrigadeId")]
-    public Brigade? Brigade { get; set; }
-
-    [Column("WorkScheduleId")]
-    public int? WorkScheduleId { get; set; }
-
-    [ForeignKey("WorkScheduleId")]
-    public WorkSchedule? WorkSchedule { get; set; }
-
-    [Required]
-    [Column("AssignedDate")]
-    public DateTime AssignedDate { get; set; }
-
-    [Column("CompletedDate")]
-    public DateTime? CompletedDate { get; set; }
-}
-
-[Table("EmployeeAssignments")]
-public class EmployeeAssignment
-{
-    [Key]
-    [Column("Id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
-    [Column("EmployeeId")]
-    public int? EmployeeId { get; set; }
-
-    [ForeignKey("EmployeeId")]
-    public Employee? Employee { get; set; }
-
-    [Column("ProjectId")]
-    public int? ProjectId { get; set; }
-
-    [ForeignKey("ProjectId")]
-    public ConstructionProject? Project { get; set; }
 }
