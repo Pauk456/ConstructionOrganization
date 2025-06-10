@@ -30,4 +30,41 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ConstructionOrganization>().HasData(
+            new ConstructionOrganization { Id = 1, Name = "Организация Тест" }
+        );
+
+        modelBuilder.Entity<ConstructionDepartment>().HasData(
+            new ConstructionDepartment { Id = 1, OrganizationId = 1, Name = "Департамент А" }
+        );
+
+        modelBuilder.Entity<ConstructionProject>().HasData(
+            new ConstructionProject { Id = 1, Location = "Новосибирск", DepartmentId = 1 }
+        );
+
+        modelBuilder.Entity<EmployeeType>().HasData(
+            new EmployeeType { Id = 1, TypeName = "Рабочий" },
+            new EmployeeType { Id = 2, TypeName = "Инженер" },
+            new EmployeeType { Id = 3, TypeName = "Администратор" }
+        );
+
+        modelBuilder.Entity<Position>().HasData(
+            new Position { Id = 1, Name = "Директор" },
+            new Position { Id = 2, Name = "Менеджер" },
+            new Position { Id = 3, Name = "Инженер ПИР" }
+        );
+
+        modelBuilder.Entity<ObjectType>().HasData(
+            new ObjectType { Id = 1, TypeName = "Жилое здание" },
+            new ObjectType { Id = 2, TypeName = "Коммерческое помещение" }
+        );
+
+        modelBuilder.Entity<WorkType>().HasData(
+            new WorkType { Id = 1, Name = "Фундаментные работы" },
+            new WorkType { Id = 2, Name = "Монтаж кровли" }
+        );
+    }
 }

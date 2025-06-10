@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConstructionOrganizations.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250609154204_AddNewTables")]
-    partial class AddNewTables
+    [Migration("20250610175510_TestM")]
+    partial class TestM
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,8 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
@@ -42,15 +43,18 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BrigadeId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("BrigadeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("BrigadeId");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("EmployeeId");
 
                     b.HasKey("Id");
 
@@ -65,21 +69,26 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("AssignedDate");
 
-                    b.Property<int>("BrigadeId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("BrigadeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("BrigadeId");
 
                     b.Property<DateTime?>("CompletedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("CompletedDate");
 
-                    b.Property<int>("WorkScheduleId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("WorkScheduleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("WorkScheduleId");
 
                     b.HasKey("Id");
 
@@ -94,22 +103,34 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("Name");
 
-                    b.Property<int>("OrganizationId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("OrganizationId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("ConstructionDepartments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Департамент А",
+                            OrganizationId = 1
+                        });
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.ConstructionOrganization", b =>
@@ -117,66 +138,89 @@ namespace ConstructionOrganizations.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("ConstructionOrganizations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Организация Тест"
+                        });
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.ConstructionProject", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("DepartmentId");
 
                     b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ManagementId")
-                        .HasColumnType("integer");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("Location");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("ConstructionProject");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DepartmentId = 1,
+                            Location = "Новосибирск"
+                        });
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EmployeeTypeId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("EmployeeTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("EmployeeTypeId");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("FirstName");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("LastName");
 
-                    b.Property<int>("PositionId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("PositionId");
 
                     b.HasKey("Id");
 
@@ -191,15 +235,18 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("EmployeeId");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ProjectId");
 
                     b.HasKey("Id");
 
@@ -214,43 +261,65 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("TypeName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("TypeName");
 
                     b.HasKey("Id");
 
                     b.ToTable("EmployeeTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            TypeName = "Рабочий"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            TypeName = "Инженер"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            TypeName = "Администратор"
+                        });
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Equipment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("EquipmentCount")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("EquipmentCount");
 
                     b.Property<string>("EquipmentName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("EquipmentName");
 
-                    b.Property<int>("ManagementId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ManagementId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ManagementId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("ManagementId");
 
                     b.ToTable("Equipments");
                 });
@@ -259,21 +328,26 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("AssignedDate");
 
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("EquipmentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("EquipmentId");
 
-                    b.Property<int>("ObjectId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ObjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ObjectId");
 
                     b.Property<DateTime?>("ReturnedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ReturnedDate");
 
                     b.HasKey("Id");
 
@@ -288,19 +362,24 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<long>("MaterialCount")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("MaterialCount");
 
                     b.Property<string>("MaterialName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("MaterialName");
 
-                    b.Property<int>("ObjectId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ObjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ObjectId");
 
                     b.HasKey("Id");
 
@@ -313,22 +392,28 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<long>("MaterialCount")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("MaterialCount");
 
                     b.Property<string>("MaterialName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("MaterialName");
 
-                    b.Property<int>("ObjectId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ObjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ObjectId");
 
-                    b.Property<int>("WorkScheduleId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("WorkScheduleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("WorkScheduleId");
 
                     b.HasKey("Id");
 
@@ -343,34 +428,37 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ConstructionProjectId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ConstructionProjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ConstructionProjectId");
 
                     b.Property<DateTime?>("EndDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("EndDate");
 
-                    b.Property<int>("ObjectType")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ObjectTypeNavigationId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ObjectType")
+                        .HasColumnType("integer")
+                        .HasColumnName("ObjectType");
 
                     b.Property<DateTime?>("StartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("StartDate");
 
                     b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("Status");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ConstructionProjectId");
 
-                    b.HasIndex("ObjectTypeNavigationId");
+                    b.HasIndex("ObjectType");
 
                     b.ToTable("Objects");
                 });
@@ -379,19 +467,24 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AttributeName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("AttributeName");
 
                     b.Property<long>("AttributeValue")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("AttributeValue");
 
-                    b.Property<int>("ObjectId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ObjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ObjectId");
 
                     b.HasKey("Id");
 
@@ -404,61 +497,103 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("TypeName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("TypeName");
 
                     b.HasKey("Id");
 
                     b.ToTable("ObjectTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            TypeName = "Жилое здание"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            TypeName = "Коммерческое помещение"
+                        });
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Position", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
                     b.ToTable("Positions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Директор"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Менеджер"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Инженер ПИР"
+                        });
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.WorkSchedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("ActualEndDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ActualEndDate");
 
                     b.Property<DateTime?>("ActualStartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ActualStartDate");
 
-                    b.Property<int>("ObjectId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("ObjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ObjectId");
 
                     b.Property<DateTime>("PlannedEndDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("PlannedEndDate");
 
                     b.Property<DateTime>("PlannedStartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("PlannedStartDate");
 
-                    b.Property<int>("WorkTypeId")
-                        .HasColumnType("integer");
+                    b.Property<int?>("WorkTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("WorkTypeId");
 
                     b.HasKey("Id");
 
@@ -473,32 +608,43 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
                     b.ToTable("WorkTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Фундаментные работы"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Монтаж кровли"
+                        });
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.BrigadeMember", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Brigade", "Brigade")
                         .WithMany("Members")
-                        .HasForeignKey("BrigadeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BrigadeId");
 
                     b.HasOne("ConstructionOrganizations.Models.Employee", "Employee")
                         .WithMany("BrigadeMemberships")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.Navigation("Brigade");
 
@@ -509,15 +655,11 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.Brigade", "Brigade")
                         .WithMany("Assignments")
-                        .HasForeignKey("BrigadeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BrigadeId");
 
                     b.HasOne("ConstructionOrganizations.Models.WorkSchedule", "WorkSchedule")
                         .WithMany("BrigadeAssignments")
-                        .HasForeignKey("WorkScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkScheduleId");
 
                     b.Navigation("Brigade");
 
@@ -528,9 +670,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.ConstructionOrganization", "Organization")
                         .WithMany()
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("Organization");
                 });
@@ -539,9 +679,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.ConstructionDepartment", "Department")
                         .WithMany("Projects")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentId");
 
                     b.Navigation("Department");
                 });
@@ -550,15 +688,11 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.EmployeeType", "EmployeeType")
                         .WithMany("Employees")
-                        .HasForeignKey("EmployeeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeTypeId");
 
                     b.HasOne("ConstructionOrganizations.Models.Position", "Position")
                         .WithMany("Employees")
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PositionId");
 
                     b.Navigation("EmployeeType");
 
@@ -569,15 +703,11 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.Employee", "Employee")
                         .WithMany("EmployeeAssignments")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.HasOne("ConstructionOrganizations.Models.ConstructionProject", "Project")
-                        .WithMany("EmployeeAssignments")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("ProjectId");
 
                     b.Navigation("Employee");
 
@@ -588,9 +718,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.ConstructionDepartment", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ManagementId");
 
                     b.Navigation("Department");
                 });
@@ -599,15 +727,11 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.Equipment", "Equipment")
                         .WithMany("Assignments")
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EquipmentId");
 
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
                         .WithMany("EquipmentAssignments")
-                        .HasForeignKey("ObjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ObjectId");
 
                     b.Navigation("Equipment");
 
@@ -618,9 +742,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
                         .WithMany("MaterialEstimates")
-                        .HasForeignKey("ObjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ObjectId");
 
                     b.Navigation("Object");
                 });
@@ -629,15 +751,11 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
                         .WithMany("MaterialUsages")
-                        .HasForeignKey("ObjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ObjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.WorkSchedule", "WorkSchedule")
                         .WithMany("MaterialUsages")
-                        .HasForeignKey("WorkScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkScheduleId");
 
                     b.Navigation("Object");
 
@@ -647,16 +765,12 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.Object", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.ConstructionProject", "Project")
-                        .WithMany("Objects")
-                        .HasForeignKey("ConstructionProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("ConstructionProjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.ObjectType", "ObjectTypeNavigation")
                         .WithMany("Objects")
-                        .HasForeignKey("ObjectTypeNavigationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ObjectType");
 
                     b.Navigation("ObjectTypeNavigation");
 
@@ -667,9 +781,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
                         .WithMany("Attributes")
-                        .HasForeignKey("ObjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ObjectId");
 
                     b.Navigation("Object");
                 });
@@ -678,15 +790,11 @@ namespace ConstructionOrganizations.Migrations
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
                         .WithMany("WorkSchedules")
-                        .HasForeignKey("ObjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ObjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.WorkType", "WorkType")
                         .WithMany("WorkSchedules")
-                        .HasForeignKey("WorkTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkTypeId");
 
                     b.Navigation("Object");
 
@@ -703,13 +811,6 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.ConstructionDepartment", b =>
                 {
                     b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("ConstructionOrganizations.Models.ConstructionProject", b =>
-                {
-                    b.Navigation("EmployeeAssignments");
-
-                    b.Navigation("Objects");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Employee", b =>

@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ConstructionOrganizations.Migrations
 {
     /// <inheritdoc />
-    public partial class AddNewTables : Migration
+    public partial class TestMi : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,23 +27,16 @@ namespace ConstructionOrganizations.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Departments",
+                name: "ConstructionOrganizations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    OrganizationId = table.Column<int>(type: "integer", nullable: false)
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Departments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Departments_Organizations_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalTable: "Organizations",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_ConstructionOrganizations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,7 +45,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TypeName = table.Column<string>(type: "text", nullable: false)
+                    TypeName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,7 +58,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TypeName = table.Column<string>(type: "text", nullable: false)
+                    TypeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,7 +71,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +84,7 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,46 +92,22 @@ namespace ConstructionOrganizations.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Equipments",
+                name: "ConstructionDepartments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ManagementId = table.Column<int>(type: "integer", nullable: false),
-                    DepartmentId = table.Column<int>(type: "integer", nullable: false),
-                    EquipmentName = table.Column<string>(type: "text", nullable: false),
-                    EquipmentCount = table.Column<int>(type: "integer", nullable: false)
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    OrganizationId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Equipments", x => x.Id);
+                    table.PrimaryKey("PK_ConstructionDepartments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Equipments_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Location = table.Column<string>(type: "text", nullable: false),
-                    ManagementId = table.Column<int>(type: "integer", nullable: false),
-                    DepartmentId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Projects_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_ConstructionDepartments_ConstructionOrganizations_Organizat~",
+                        column: x => x.OrganizationId,
+                        principalTable: "ConstructionOrganizations",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -145,10 +116,10 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    EmployeeTypeId = table.Column<int>(type: "integer", nullable: false),
-                    PositionId = table.Column<int>(type: "integer", nullable: false)
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    EmployeeTypeId = table.Column<int>(type: "integer", nullable: true),
+                    PositionId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -157,44 +128,51 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_Employees_EmployeeTypes_EmployeeTypeId",
                         column: x => x.EmployeeTypeId,
                         principalTable: "EmployeeTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Employees_Positions_PositionId",
                         column: x => x.PositionId,
                         principalTable: "Positions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Objects",
+                name: "ConstructionProject",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ObjectType = table.Column<int>(type: "integer", nullable: false),
-                    ObjectTypeNavigationId = table.Column<int>(type: "integer", nullable: false),
-                    ConstructionProjectId = table.Column<int>(type: "integer", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: false)
+                    Location = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    DepartmentId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Objects", x => x.Id);
+                    table.PrimaryKey("PK_ConstructionProject", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Objects_ObjectTypes_ObjectTypeNavigationId",
-                        column: x => x.ObjectTypeNavigationId,
-                        principalTable: "ObjectTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_ConstructionProject_ConstructionDepartments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "ConstructionDepartments",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Equipments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ManagementId = table.Column<int>(type: "integer", nullable: true),
+                    EquipmentName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    EquipmentCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Equipments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Objects_Projects_ConstructionProjectId",
-                        column: x => x.ConstructionProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Equipments_ConstructionDepartments_ManagementId",
+                        column: x => x.ManagementId,
+                        principalTable: "ConstructionDepartments",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -203,8 +181,8 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    BrigadeId = table.Column<int>(type: "integer", nullable: false),
-                    EmployeeId = table.Column<int>(type: "integer", nullable: false)
+                    BrigadeId = table.Column<int>(type: "integer", nullable: true),
+                    EmployeeId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,14 +191,12 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_BrigadeMembers_Brigades_BrigadeId",
                         column: x => x.BrigadeId,
                         principalTable: "Brigades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BrigadeMembers_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -229,24 +205,49 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EmployeeId = table.Column<int>(type: "integer", nullable: false),
-                    ProjectId = table.Column<int>(type: "integer", nullable: false)
+                    EmployeeId = table.Column<int>(type: "integer", nullable: true),
+                    ProjectId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmployeeAssignments", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_EmployeeAssignments_ConstructionProject_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "ConstructionProject",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_EmployeeAssignments_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Objects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ConstructionProjectId = table.Column<int>(type: "integer", nullable: true),
+                    ObjectType = table.Column<int>(type: "integer", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Objects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EmployeeAssignments_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Objects_ConstructionProject_ConstructionProjectId",
+                        column: x => x.ConstructionProjectId,
+                        principalTable: "ConstructionProject",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Objects_ObjectTypes_ObjectType",
+                        column: x => x.ObjectType,
+                        principalTable: "ObjectTypes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -255,8 +256,8 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EquipmentId = table.Column<int>(type: "integer", nullable: false),
-                    ObjectId = table.Column<int>(type: "integer", nullable: false),
+                    EquipmentId = table.Column<int>(type: "integer", nullable: true),
+                    ObjectId = table.Column<int>(type: "integer", nullable: true),
                     AssignedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ReturnedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -267,14 +268,12 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_EquipmentAssignments_Equipments_EquipmentId",
                         column: x => x.EquipmentId,
                         principalTable: "Equipments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_EquipmentAssignments_Objects_ObjectId",
                         column: x => x.ObjectId,
                         principalTable: "Objects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -283,8 +282,8 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ObjectId = table.Column<int>(type: "integer", nullable: false),
-                    MaterialName = table.Column<string>(type: "text", nullable: false),
+                    ObjectId = table.Column<int>(type: "integer", nullable: true),
+                    MaterialName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     MaterialCount = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -294,8 +293,7 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_MaterialEstimates_Objects_ObjectId",
                         column: x => x.ObjectId,
                         principalTable: "Objects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -304,8 +302,8 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ObjectId = table.Column<int>(type: "integer", nullable: false),
-                    AttributeName = table.Column<string>(type: "text", nullable: false),
+                    ObjectId = table.Column<int>(type: "integer", nullable: true),
+                    AttributeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     AttributeValue = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -315,8 +313,7 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_ObjectAttributes_Objects_ObjectId",
                         column: x => x.ObjectId,
                         principalTable: "Objects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -325,8 +322,8 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ObjectId = table.Column<int>(type: "integer", nullable: false),
-                    WorkTypeId = table.Column<int>(type: "integer", nullable: false),
+                    ObjectId = table.Column<int>(type: "integer", nullable: true),
+                    WorkTypeId = table.Column<int>(type: "integer", nullable: true),
                     PlannedStartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     PlannedEndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ActualStartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -339,14 +336,12 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_WorkSchedules_Objects_ObjectId",
                         column: x => x.ObjectId,
                         principalTable: "Objects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WorkSchedules_WorkTypes_WorkTypeId",
                         column: x => x.WorkTypeId,
                         principalTable: "WorkTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -355,8 +350,8 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    BrigadeId = table.Column<int>(type: "integer", nullable: false),
-                    WorkScheduleId = table.Column<int>(type: "integer", nullable: false),
+                    BrigadeId = table.Column<int>(type: "integer", nullable: true),
+                    WorkScheduleId = table.Column<int>(type: "integer", nullable: true),
                     AssignedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CompletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -367,14 +362,12 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_BrigadeWorkAssignments_Brigades_BrigadeId",
                         column: x => x.BrigadeId,
                         principalTable: "Brigades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BrigadeWorkAssignments_WorkSchedules_WorkScheduleId",
                         column: x => x.WorkScheduleId,
                         principalTable: "WorkSchedules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -383,9 +376,9 @@ namespace ConstructionOrganizations.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ObjectId = table.Column<int>(type: "integer", nullable: false),
-                    WorkScheduleId = table.Column<int>(type: "integer", nullable: false),
-                    MaterialName = table.Column<string>(type: "text", nullable: false),
+                    ObjectId = table.Column<int>(type: "integer", nullable: true),
+                    WorkScheduleId = table.Column<int>(type: "integer", nullable: true),
+                    MaterialName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     MaterialCount = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -395,15 +388,66 @@ namespace ConstructionOrganizations.Migrations
                         name: "FK_MaterialUsages_Objects_ObjectId",
                         column: x => x.ObjectId,
                         principalTable: "Objects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_MaterialUsages_WorkSchedules_WorkScheduleId",
                         column: x => x.WorkScheduleId,
                         principalTable: "WorkSchedules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.InsertData(
+                table: "ConstructionOrganizations",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 1, "Организация Тест" });
+
+            migrationBuilder.InsertData(
+                table: "EmployeeTypes",
+                columns: new[] { "Id", "TypeName" },
+                values: new object[,]
+                {
+                    { 1, "Рабочий" },
+                    { 2, "Инженер" },
+                    { 3, "Администратор" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ObjectTypes",
+                columns: new[] { "Id", "TypeName" },
+                values: new object[,]
+                {
+                    { 1, "Жилое здание" },
+                    { 2, "Коммерческое помещение" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Positions",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Директор" },
+                    { 2, "Менеджер" },
+                    { 3, "Инженер ПИР" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "WorkTypes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Фундаментные работы" },
+                    { 2, "Монтаж кровли" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ConstructionDepartments",
+                columns: new[] { "Id", "Name", "OrganizationId" },
+                values: new object[] { 1, "Департамент А", 1 });
+
+            migrationBuilder.InsertData(
+                table: "ConstructionProject",
+                columns: new[] { "Id", "DepartmentId", "Location" },
+                values: new object[] { 1, 1, "Новосибирск" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_BrigadeMembers_BrigadeId",
@@ -426,9 +470,14 @@ namespace ConstructionOrganizations.Migrations
                 column: "WorkScheduleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_OrganizationId",
-                table: "Departments",
+                name: "IX_ConstructionDepartments_OrganizationId",
+                table: "ConstructionDepartments",
                 column: "OrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConstructionProject_DepartmentId",
+                table: "ConstructionProject",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeAssignments_EmployeeId",
@@ -461,9 +510,9 @@ namespace ConstructionOrganizations.Migrations
                 column: "ObjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Equipments_DepartmentId",
+                name: "IX_Equipments_ManagementId",
                 table: "Equipments",
-                column: "DepartmentId");
+                column: "ManagementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MaterialEstimates_ObjectId",
@@ -491,14 +540,9 @@ namespace ConstructionOrganizations.Migrations
                 column: "ConstructionProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Objects_ObjectTypeNavigationId",
+                name: "IX_Objects_ObjectType",
                 table: "Objects",
-                column: "ObjectTypeNavigationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_DepartmentId",
-                table: "Projects",
-                column: "DepartmentId");
+                column: "ObjectType");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkSchedules_ObjectId",
@@ -560,13 +604,16 @@ namespace ConstructionOrganizations.Migrations
                 name: "WorkTypes");
 
             migrationBuilder.DropTable(
+                name: "ConstructionProject");
+
+            migrationBuilder.DropTable(
                 name: "ObjectTypes");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "ConstructionDepartments");
 
             migrationBuilder.DropTable(
-                name: "Departments");
+                name: "ConstructionOrganizations");
         }
     }
 }
