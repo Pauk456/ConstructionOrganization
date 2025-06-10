@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ConstructionOrganizations.Controllers.CompanySettings;
 
 [ApiController]
-[Route("CompanySettings/[controller]")]
+[Route("api/[controller]")]
 public class PositionsController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -18,7 +18,9 @@ public class PositionsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(Position position)
     {
-        throw new NotImplementedException();
+        _context.Positions.Add(position);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpPut("{id}")]

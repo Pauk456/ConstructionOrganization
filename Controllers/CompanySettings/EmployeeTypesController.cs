@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ConstructionOrganizations.Controllers.CompanySettings;
 
 [ApiController]
-[Route("CompanySettings/[controller]")]
+[Route("api/[controller]")]
 public class EmployeeTypesController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -16,9 +16,11 @@ public class EmployeeTypesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(EmployeeType employeeType)
+    public async Task<IActionResult> Create([FromBody] EmployeeType employeeType)
     {
-        throw new NotImplementedException();
+        _context.EmployeeTypes.Add(employeeType);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpPut("{id}")]

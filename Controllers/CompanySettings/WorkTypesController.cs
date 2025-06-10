@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ConstructionOrganizations.Controllers.CompanySettings;
 
 [ApiController]
-[Route("CompanySettings/[controller]")]
+[Route("api/[controller]")]
 public class WorkTypesController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -17,7 +17,9 @@ public class WorkTypesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(WorkType workType)
     {
-        throw new NotImplementedException();
+        _context.WorkTypes.Add(workType);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpPut("{id}")]

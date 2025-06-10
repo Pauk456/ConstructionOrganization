@@ -9,11 +9,6 @@ using System.Reflection;
 
 namespace ConstructionOrganizations.Controllers;
 
-
-
-
-
-
 [ApiController]
 [Route("api/")]
 public class MainController : ControllerBase

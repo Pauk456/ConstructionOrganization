@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ConstructionOrganizations.Controllers.CompanySettings;
 
 [ApiController]
-[Route("CompanySettings/[controller]")]
+[Route("api/[controller]")]
 public class ObjectTypesController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -16,9 +16,11 @@ public class ObjectTypesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(ObjectType objectType)
+    public async Task<IActionResult> Create([FromBody] ObjectType objectType)
     {
-        throw new NotFiniteNumberException();
+        _context.ObjectTypes.Add(objectType);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpPut("{id}")]
