@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConstructionOrganizations.Controllers;
+namespace ConstructionOrganizations.Controllers.People;
 
 [ApiController]
 [Route("api/[controller]")]
