@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ConstructionOrganizations.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Object = ConstructionOrganizations.Models.Object;
 
@@ -65,6 +66,40 @@ public class ObjectsController : ControllerBase
         existing.Status = updated.Status;
 
         await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    //public record AssignEquipmentDTO(int Id, DateTime AssignedDate, 
+    //    DateTime ReturnedDate, int count, int EquipmentId, int ObjectId);
+
+    [HttpPost("assignEquipment")]
+    public async Task<IActionResult> AssignEquipment([FromBody] EquipmentObjectAssignment assignEquipmentDTO)
+    {
+        var _object = await _context.Objects
+            .Include(eq => eq.EquipmentObjectAssignments)
+            .FirstOrDefaultAsync(eq => eq.Id == assignEquipmentDTO.ObjectId);
+
+        _object.EquipmentObjectAssignments.Add(assignEquipmentDTO);
+
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpDelete("unassignEquipment")]
+    public async Task<IActionResult> UnassignEquipment(int equipmentId, int objectId)
+    {
+        var _object = await _context.Objects
+            .Include(eq => eq.EquipmentObjectAssignments)
+            .FirstOrDefaultAsync(eq => eq.Id == objectId);
+
+        var assignment = _object.EquipmentObjectAssignments.FirstOrDefault(x => x.EquipmentId == equipmentId)
+
+        if (assignment == null)
+            return NotFound();
+
+        _object.EquipmentObjectAssignments.Remove(assignment);
+        await _context.SaveChangesAsync();
+
         return Ok();
     }
 }

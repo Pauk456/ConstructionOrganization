@@ -66,6 +66,7 @@ public class EmployeesController : ControllerBase
         existingEmployee.LastName = employee.LastName;
         existingEmployee.EmployeeTypeId = employee.EmployeeTypeId;
         existingEmployee.PositionId = employee.PositionId;
+        existingEmployee.ProjectId = employee.ProjectId;
         existingEmployee.BrigadeId = employee.Brigade?.Id;
 
         await _context.SaveChangesAsync();
