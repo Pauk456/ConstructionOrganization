@@ -20,6 +20,24 @@ public class MaterialUsagesController : ControllerBase
         return Ok(usage);
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var usage = await _context.MaterialUsages
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (usage == null) return NotFound();
+
+        var dto = new
+        {
+            Id = usage.Id,
+            ObjectId = usage.ObjectId,
+            WorkScheduleId = usage.WorkScheduleId
+        };
+
+        return Ok(dto);
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] MaterialUsage updated)
     {

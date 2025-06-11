@@ -20,6 +20,30 @@ public class WorkSchedulesController : ControllerBase
         return Ok(schedule);
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var schedule = await _context.WorkSchedules
+            .Include(s => s.MaterialUsages)
+            .Include(s => s.BrigadeWorkAssignments)
+            .ThenInclude(bwa => bwa.Brigade)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (schedule == null) return NotFound();
+
+        var materialUsageIds = schedule.MaterialUsages.Select(m => m.Id).ToList();
+        var brigadeIds = schedule.BrigadeWorkAssignments.Select(bwa => bwa.BrigadeId).ToList();
+
+        var dto = new
+        {
+            Id = schedule.Id,
+            MaterialUsageIds = materialUsageIds,
+            BrigadeIds = brigadeIds
+        };
+
+        return Ok(dto);
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] WorkSchedule updated)
     {

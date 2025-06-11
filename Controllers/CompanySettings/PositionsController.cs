@@ -15,12 +15,32 @@ public class PositionsController : ControllerBase
         _context = context;
     }
 
-    [HttpPost]
+    [HttpPost("post")]
     public async Task<IActionResult> Create(Position position)
     {
         _context.Positions.Add(position);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var position = await _context.Positions
+            .Include(p => p.Employees)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (position == null) return NotFound();
+
+        var employeeIds = position.Employees.Select(e => e.Id).ToList();
+
+        var dto = new
+        {
+            Id = position.Id,
+            Employees = employeeIds
+        };
+
+        return Ok(dto);
     }
 
     [HttpPut("{id}")]

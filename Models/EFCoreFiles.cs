@@ -123,7 +123,6 @@ public class Employee
     [ForeignKey("PositionId")]
     public Position? Position { get; set; }
 
-
     [Column("ProjectId")]
     public int? ProjectId { get; set; }
 
@@ -149,8 +148,6 @@ public class ObjectType
     [Column("TypeName")]
     [StringLength(100)]
     public string TypeName { get; set; } = null!;
-
-    public ICollection<Object> Objects { get; set; } = new List<Object>();
 }
 
 [Table("Objects")]
@@ -188,11 +185,10 @@ public class Object
     public string? Customer { get; set; }
 
     public ICollection<EquipmentObjectAssignment> EquipmentObjectAssignments { get; set; } = new List<EquipmentObjectAssignment>();
-
-    //public ICollection<ObjectAttribute> Attributes { get; set; } = new List<ObjectAttribute>();
-    //public ICollection<WorkSchedule> WorkSchedules { get; set; } = new List<WorkSchedule>();
-    //public ICollection<MaterialEstimate> MaterialEstimates { get; set; } = new List<MaterialEstimate>();
-    //public ICollection<MaterialUsage> MaterialUsages { get; set; } = new List<MaterialUsage>();
+    public ICollection<WorkSchedule> WorkSchedules { get; set; } = new List<WorkSchedule>();
+    public ICollection<MaterialEstimate> MaterialEstimates { get; set; } = new List<MaterialEstimate>();
+    public ICollection<ObjectAttribute> Attributes { get; set; } = new List<ObjectAttribute>();
+    public ICollection<MaterialUsage> MaterialUsages { get; set; } = new List<MaterialUsage>();
 }
 
 [Table("Brigades")]

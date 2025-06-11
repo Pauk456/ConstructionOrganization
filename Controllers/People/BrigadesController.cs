@@ -1,6 +1,8 @@
 ﻿using ConstructionOrganizations.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ConstructionOrganizations.Controllers.People;
 
@@ -20,49 +22,67 @@ public class BrigadesController : ControllerBase
         return Ok(brigade);
     }
 
-    //[HttpPost("add-member")]
-    //public async Task<IActionResult> AddMember(int brigadeId, int employeeId)
-    //{
-    //    var brigade = await _context.Brigades
-    //        .Include(b => b.Members)
-    //        .FirstOrDefaultAsync(b => b.Id == brigadeId);
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var brigade = await _context.Brigades
+            .Include(b => b.Members)
+            .Include(b => b.BrigadeWorkAssignments)
+            .ThenInclude(bwa => bwa.WorkSchedule)
+            .FirstOrDefaultAsync(b => b.Id == id);
 
-    //    var employee = await _context.Employees
-    //        .FirstOrDefaultAsync(e => e.Id == employeeId);
+        if (brigade == null) return NotFound();
 
-    //    if (brigade == null || employee == null)
-    //        return NotFound();
+        var memberIds = brigade.Members.Select(m => m.Id).ToList();
+        var workScheduleIds = brigade.BrigadeWorkAssignments.Select(bwa => bwa.WorkScheduleId).ToList();
 
-    //    var membership = new BrigadeMember
-    //    {
-    //        BrigadeId = brigadeId,
-    //        EmployeeId = employeeId,
-    //    };
+        var dto = new
+        {
+            Id = brigade.Id,
+            Members = memberIds,
+            WorkScheduleIds = workScheduleIds
+        };
 
-    //    brigade.Members.Add(membership);
-    //    await _context.SaveChangesAsync();
+        return Ok(dto);
+    }
 
-    //    return Ok();
-    //}
+    [HttpPost("add-member")]
+    public async Task<IActionResult> AddMember(int brigadeId, int employeeId)
+    {
+        var brigade = await _context.Brigades
+            .Include(b => b.Members)
+            .FirstOrDefaultAsync(b => b.Id == brigadeId);
 
-    //[HttpDelete("remove-member")]
-    //public async Task<IActionResult> RemoveMember(int brigadeId, int employeeId)
-    //{
-    //    var brigade = await _context.Brigades
-    //        .Include(b => b.Members)
-    //        .FirstOrDefaultAsync(b => b.Id == brigadeId);
+        var employee = await _context.Employees
+            .FirstOrDefaultAsync(e => e.Id == employeeId);
 
-    //    if (brigade == null)
-    //        return NotFound();
+        if (brigade == null || employee == null)
+            return NotFound();
 
-    //    var employee = brigade.Members.FirstOrDefault(e => e.EmployeeId == employeeId);
+        brigade.Members.Add(employee);
+        await _context.SaveChangesAsync();
 
-    //    if (employee == null)
-    //        return NotFound();
+        return Ok();
+    }
 
-    //    brigade.Members.Remove(employee);
-    //    await _context.SaveChangesAsync();
+    [HttpDelete("remove-member")]
+    public async Task<IActionResult> RemoveMember(int brigadeId, int employeeId)
+    {
+        var brigade = await _context.Brigades
+            .Include(b => b.Members)
+            .FirstOrDefaultAsync(b => b.Id == brigadeId);
 
-    //    return Ok();
-    //}
+        if (brigade == null)
+            return NotFound();
+
+        var employee = brigade.Members.FirstOrDefault(e => e.Id == employeeId);
+
+        if (employee == null)
+            return NotFound();
+
+        brigade.Members.Remove(employee);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
 }

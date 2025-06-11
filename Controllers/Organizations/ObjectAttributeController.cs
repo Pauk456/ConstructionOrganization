@@ -20,6 +20,23 @@ public class ObjectAttributesController : ControllerBase
         return Ok(attribute);
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var attribute = await _context.ObjectAttributes
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        if (attribute == null) return NotFound();
+
+        var dto = new
+        {
+            Id = attribute.Id,
+            ObjectId = attribute.ObjectId
+        };
+
+        return Ok(dto);
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] ObjectAttribute updated)
     {

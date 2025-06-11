@@ -1,6 +1,7 @@
 ﻿using ConstructionOrganizations.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace ConstructionOrganizations.Controllers.People;
 
@@ -13,6 +14,30 @@ public class EmployeesController : ControllerBase
     public EmployeesController(AppDbContext context)
     {
         _context = context;
+    }
+
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var employee = await _context.Employees
+            .Include(e => e.ConstructionProject)
+            .Include(e => e.Brigade)
+            .Include(e => e.EmployeeType)
+            .Include(e => e.Position)
+            .FirstOrDefaultAsync(e => e.Id == id);
+
+        if (employee == null) return NotFound();
+
+        var dto = new
+        {
+            Id = employee.Id,
+            ProjectId = employee.ConstructionProject?.Id,
+            BrigadeId = employee.Brigade?.Id,
+            EmployeeTypeId = employee.EmployeeType?.Id,
+            PositionId = employee.Position?.Id
+        };
+
+        return Ok(dto);
     }
 
     [HttpPost("post")]
@@ -41,6 +66,7 @@ public class EmployeesController : ControllerBase
         existingEmployee.LastName = employee.LastName;
         existingEmployee.EmployeeTypeId = employee.EmployeeTypeId;
         existingEmployee.PositionId = employee.PositionId;
+        existingEmployee.BrigadeId = employee.Brigade?.Id;
 
         await _context.SaveChangesAsync();
 

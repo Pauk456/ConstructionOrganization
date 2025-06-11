@@ -20,6 +20,26 @@ public class DepartmentsController : ControllerBase
         return Ok(dept);
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var dept = await _context.Departments
+            .Include(d => d.Projects)
+            .FirstOrDefaultAsync(d => d.Id == id);
+
+        if (dept == null) return NotFound();
+
+        var projectIds = dept.Projects.Select(p => p.Id).ToList();
+
+        var dto = new
+        {
+            Id = dept.Id,
+            Projects = projectIds
+        };
+
+        return Ok(dto);
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] ConstructionDepartment updated)
     {

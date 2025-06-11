@@ -70,8 +70,37 @@ public class AppDbContext : DbContext
            .HasForeignKey(m => m.DepartmentId);
 
 
+        // 
 
+        modelBuilder.Entity<Object>()
+            .HasMany(b => b.WorkSchedules)
+            .WithOne(m => m.Object)
+            .HasForeignKey(m => m.ObjectId);
 
+        modelBuilder.Entity<Object>()
+            .HasMany(b => b.MaterialEstimates)
+            .WithOne(m => m.Object)
+            .HasForeignKey(m => m.ObjectId);
+
+        modelBuilder.Entity<Object>()
+            .HasMany(b => b.MaterialUsages)
+            .WithOne(m => m.Object)
+            .HasForeignKey(m => m.ObjectId);
+
+        modelBuilder.Entity<Object>()
+            .HasMany(b => b.Attributes)
+            .WithOne(m => m.Object)
+            .HasForeignKey(m => m.ObjectId);
+
+        modelBuilder.Entity<WorkSchedule>()
+            .HasMany(b => b.MaterialUsages)
+            .WithOne(m => m.WorkSchedule)
+            .HasForeignKey(m => m.WorkScheduleId);
+
+        modelBuilder.Entity<MaterialUsage>()
+            .HasOne(b => b.Object)
+            .WithMany(m => m.MaterialUsages)
+            .HasForeignKey(m => m.ObjectId);
 
 
         modelBuilder.Entity<ConstructionOrganization>().HasData(

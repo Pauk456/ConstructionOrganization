@@ -3,6 +3,7 @@ using System;
 using ConstructionOrganizations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConstructionOrganizations.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250611122306_T")]
+    partial class T
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -686,7 +689,7 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.MaterialEstimate", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany("MaterialEstimates")
+                        .WithMany()
                         .HasForeignKey("ObjectId");
 
                     b.Navigation("Object");
@@ -695,7 +698,7 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.MaterialUsage", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany("MaterialUsages")
+                        .WithMany()
                         .HasForeignKey("ObjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.WorkSchedule", "WorkSchedule")
@@ -714,7 +717,7 @@ namespace ConstructionOrganizations.Migrations
                         .HasForeignKey("ConstructionProjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.ObjectType", "ObjectTypeNavigation")
-                        .WithMany()
+                        .WithMany("Objects")
                         .HasForeignKey("ObjectType");
 
                     b.Navigation("ObjectTypeNavigation");
@@ -725,7 +728,7 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.ObjectAttribute", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany("Attributes")
+                        .WithMany()
                         .HasForeignKey("ObjectId");
 
                     b.Navigation("Object");
@@ -734,7 +737,7 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.WorkSchedule", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany("WorkSchedules")
+                        .WithMany()
                         .HasForeignKey("ObjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.WorkType", "WorkType")
@@ -780,15 +783,12 @@ namespace ConstructionOrganizations.Migrations
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Object", b =>
                 {
-                    b.Navigation("Attributes");
-
                     b.Navigation("EquipmentObjectAssignments");
+                });
 
-                    b.Navigation("MaterialEstimates");
-
-                    b.Navigation("MaterialUsages");
-
-                    b.Navigation("WorkSchedules");
+            modelBuilder.Entity("ConstructionOrganizations.Models.ObjectType", b =>
+                {
+                    b.Navigation("Objects");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Position", b =>

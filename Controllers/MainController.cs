@@ -79,20 +79,9 @@ public class MainController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("testData")]
-    public IActionResult TestData()
+    [HttpGet("test")]
+    public IActionResult Test()
     {
-        try
-        {
-            var org = new ConstructionOrganization { Name = "dfsg" };
-            _context.Organizations.Add(org);
-            _context.SaveChanges();
-
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "Ошибка при добавлении данных", Error = ex.Message });
-        }
+        return Ok();
     }
 }

@@ -15,12 +15,28 @@ public class ObjectTypesController : ControllerBase
         _context = context;
     }
 
-    [HttpPost]
+    [HttpPost("post")]
     public async Task<IActionResult> Create([FromBody] ObjectType objectType)
     {
         _context.ObjectTypes.Add(objectType);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var objType = await _context.ObjectTypes
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (objType == null) return NotFound();
+
+        var dto = new
+        {
+            Id = objType.Id
+        };
+
+        return Ok(dto);
     }
 
     [HttpPut("{id}")]

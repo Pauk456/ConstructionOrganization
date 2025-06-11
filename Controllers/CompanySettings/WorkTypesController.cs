@@ -14,12 +14,32 @@ public class WorkTypesController : ControllerBase
     {
         _context = context;
     }
-    [HttpPost]
+    [HttpPost("post")]
     public async Task<IActionResult> Create(WorkType workType)
     {
         _context.WorkTypes.Add(workType);
         await _context.SaveChangesAsync();
         return Ok();
+    }
+
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var workType = await _context.WorkTypes
+            .Include(w => w.WorkSchedules)
+            .FirstOrDefaultAsync(w => w.Id == id);
+
+        if (workType == null) return NotFound();
+
+        var scheduleIds = workType.WorkSchedules.Select(s => s.Id).ToList();
+
+        var dto = new
+        {
+            Id = workType.Id,
+            WorkScheduleIds = scheduleIds
+        };
+
+        return Ok(dto);
     }
 
     [HttpPut("{id}")]

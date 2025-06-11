@@ -20,6 +20,23 @@ public class MaterialEstimatesController : ControllerBase
         return Ok(estimate);
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var estimate = await _context.MaterialEstimates
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (estimate == null) return NotFound();
+
+        var dto = new
+        {
+            Id = estimate.Id,
+            ObjectId = estimate.ObjectId
+        };
+
+        return Ok(dto);
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] MaterialEstimate updated)
     {

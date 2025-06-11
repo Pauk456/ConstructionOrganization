@@ -20,6 +20,26 @@ public class OrganizationsController : ControllerBase
         return Ok(org);
     }
 
+    [HttpGet("get")]
+    public async Task<ActionResult> GetById(int id)
+    {
+        var org = await _context.Organizations
+            .Include(o => o.Departments)
+            .FirstOrDefaultAsync(o => o.Id == id);
+
+        if (org == null) return NotFound();
+
+        var departmentIds = org.Departments.Select(d => d.Id).ToList();
+
+        var dto = new
+        {
+            Id = org.Id,
+            Departments = departmentIds
+        };
+
+        return Ok(dto);
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] ConstructionOrganization updated)
     {
