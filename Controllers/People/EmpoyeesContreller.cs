@@ -31,6 +31,8 @@ public class EmployeesController : ControllerBase
         var dto = new
         {
             Id = employee.Id,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
             ProjectId = employee.ConstructionProject?.Id,
             BrigadeId = employee.Brigade?.Id,
             EmployeeTypeId = employee.EmployeeType?.Id,

@@ -92,7 +92,7 @@ public class ObjectsController : ControllerBase
             .Include(eq => eq.EquipmentObjectAssignments)
             .FirstOrDefaultAsync(eq => eq.Id == objectId);
 
-        var assignment = _object.EquipmentObjectAssignments.FirstOrDefault(x => x.EquipmentId == equipmentId)
+        var assignment = _object.EquipmentObjectAssignments.FirstOrDefault(x => x.EquipmentId == equipmentId);
 
         if (assignment == null)
             return NotFound();

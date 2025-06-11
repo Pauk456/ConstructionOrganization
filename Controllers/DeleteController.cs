@@ -11,13 +11,13 @@ namespace ConstructionOrganizations.Controllers;
 
 [ApiController]
 [Route("api/")]
-public class MainController : ControllerBase
+public class DeleteController : ControllerBase
 {
     private readonly AppDbContext _context;
 
     private readonly Dictionary<string, IQueryable<System.Object>> entityMap;
 
-    public MainController(AppDbContext context)
+    public DeleteController(AppDbContext context)
     {
         _context = context;
 
@@ -40,28 +40,6 @@ public class MainController : ControllerBase
             ["equipments"] = _context.Equipments.AsQueryable()
         };
 
-    }
-
-    [HttpGet("all")]
-    public async Task<ActionResult> GetAll(string entity)
-    {
-        if (!entityMap.TryGetValue(entity.ToLower(), out var query))
-            return BadRequest($"Unknown entity: {entity}");
-
-        var data = await query.ToListAsync();
-
-        return Ok(data);
-    }
-
-    [HttpGet("get")]
-    public async Task<ActionResult> GetById(int id, string entity)
-    {
-        if (!entityMap.TryGetValue(entity.ToLower(), out var query))
-            return BadRequest($"Unknown entity: {entity}");
-
-        var item = await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
-
-        return Ok(item);
     }
 
     [HttpDelete("delete")]

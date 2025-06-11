@@ -10,6 +10,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
+app.UseStaticFiles(); // ??
 app.UseRouting();
 
 if (app.Environment.IsDevelopment())
