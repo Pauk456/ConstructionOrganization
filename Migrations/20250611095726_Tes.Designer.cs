@@ -3,6 +3,7 @@ using System;
 using ConstructionOrganizations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConstructionOrganizations.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250611095726_Tes")]
+    partial class Tes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,7 @@ namespace ConstructionOrganizations.Migrations
                     b.ToTable("Brigades");
                 });
 
-            modelBuilder.Entity("ConstructionOrganizations.Models.BrigadeWorkAssignment", b =>
+            modelBuilder.Entity("ConstructionOrganizations.Models.BrigadeMember", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,25 +47,19 @@ namespace ConstructionOrganizations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("BrigadeId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CompletedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("WorkScheduleId")
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BrigadeId");
 
-                    b.HasIndex("WorkScheduleId");
+                    b.HasIndex("EmployeeId");
 
-                    b.ToTable("BrigadeWorkAssignment");
+                    b.ToTable("BrigadeMember");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.ConstructionDepartment", b =>
@@ -168,10 +165,6 @@ namespace ConstructionOrganizations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BrigadeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("BrigadeId");
-
                     b.Property<int?>("EmployeeTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("EmployeeTypeId");
@@ -192,21 +185,36 @@ namespace ConstructionOrganizations.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("PositionId");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("integer")
-                        .HasColumnName("ProjectId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("BrigadeId");
 
                     b.HasIndex("EmployeeTypeId");
 
                     b.HasIndex("PositionId");
 
+                    b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("ConstructionOrganizations.Models.EmployeeAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("EmployeeAssignment");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.EmployeeType", b =>
@@ -274,38 +282,6 @@ namespace ConstructionOrganizations.Migrations
                     b.HasIndex("ManagementId");
 
                     b.ToTable("Equipments");
-                });
-
-            modelBuilder.Entity("ConstructionOrganizations.Models.EquipmentObjectAssignment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ObjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("ReturnedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("count")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EquipmentId");
-
-                    b.HasIndex("ObjectId");
-
-                    b.ToTable("EquipmentObjectAssignment");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.MaterialEstimate", b =>
@@ -586,23 +562,23 @@ namespace ConstructionOrganizations.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ConstructionOrganizations.Models.BrigadeWorkAssignment", b =>
+            modelBuilder.Entity("ConstructionOrganizations.Models.BrigadeMember", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Brigade", "Brigade")
-                        .WithMany("BrigadeWorkAssignments")
+                        .WithMany("Members")
                         .HasForeignKey("BrigadeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ConstructionOrganizations.Models.WorkSchedule", "WorkSchedule")
-                        .WithMany("BrigadeWorkAssignments")
-                        .HasForeignKey("WorkScheduleId")
+                    b.HasOne("ConstructionOrganizations.Models.Employee", "Employee")
+                        .WithMany("BrigadeMemberships")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Brigade");
 
-                    b.Navigation("WorkSchedule");
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.ConstructionDepartment", b =>
@@ -625,10 +601,6 @@ namespace ConstructionOrganizations.Migrations
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Employee", b =>
                 {
-                    b.HasOne("ConstructionOrganizations.Models.Brigade", "Brigade")
-                        .WithMany("Members")
-                        .HasForeignKey("BrigadeId");
-
                     b.HasOne("ConstructionOrganizations.Models.EmployeeType", "EmployeeType")
                         .WithMany("Employees")
                         .HasForeignKey("EmployeeTypeId");
@@ -637,17 +609,28 @@ namespace ConstructionOrganizations.Migrations
                         .WithMany("Employees")
                         .HasForeignKey("PositionId");
 
-                    b.HasOne("ConstructionOrganizations.Models.ConstructionProject", "ConstructionProject")
-                        .WithMany("Employees")
-                        .HasForeignKey("ProjectId");
-
-                    b.Navigation("Brigade");
-
-                    b.Navigation("ConstructionProject");
-
                     b.Navigation("EmployeeType");
 
                     b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("ConstructionOrganizations.Models.EmployeeAssignment", b =>
+                {
+                    b.HasOne("ConstructionOrganizations.Models.Employee", "Employee")
+                        .WithMany("EmployeeAssignments")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConstructionOrganizations.Models.ConstructionProject", "Project")
+                        .WithMany("EmployeeAssignments")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Equipment", b =>
@@ -659,29 +642,10 @@ namespace ConstructionOrganizations.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("ConstructionOrganizations.Models.EquipmentObjectAssignment", b =>
-                {
-                    b.HasOne("ConstructionOrganizations.Models.Equipment", "Equipment")
-                        .WithMany("EquipmentObjectAssignments")
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany("EquipmentObjectAssignments")
-                        .HasForeignKey("ObjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Equipment");
-
-                    b.Navigation("Object");
-                });
-
             modelBuilder.Entity("ConstructionOrganizations.Models.MaterialEstimate", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany()
+                        .WithMany("MaterialEstimates")
                         .HasForeignKey("ObjectId");
 
                     b.Navigation("Object");
@@ -690,7 +654,7 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.MaterialUsage", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany()
+                        .WithMany("MaterialUsages")
                         .HasForeignKey("ObjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.WorkSchedule", "WorkSchedule")
@@ -720,7 +684,7 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.ObjectAttribute", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany()
+                        .WithMany("Attributes")
                         .HasForeignKey("ObjectId");
 
                     b.Navigation("Object");
@@ -729,7 +693,7 @@ namespace ConstructionOrganizations.Migrations
             modelBuilder.Entity("ConstructionOrganizations.Models.WorkSchedule", b =>
                 {
                     b.HasOne("ConstructionOrganizations.Models.Object", "Object")
-                        .WithMany()
+                        .WithMany("WorkSchedules")
                         .HasForeignKey("ObjectId");
 
                     b.HasOne("ConstructionOrganizations.Models.WorkType", "WorkType")
@@ -743,8 +707,6 @@ namespace ConstructionOrganizations.Migrations
 
             modelBuilder.Entity("ConstructionOrganizations.Models.Brigade", b =>
                 {
-                    b.Navigation("BrigadeWorkAssignments");
-
                     b.Navigation("Members");
                 });
 
@@ -755,7 +717,14 @@ namespace ConstructionOrganizations.Migrations
 
             modelBuilder.Entity("ConstructionOrganizations.Models.ConstructionProject", b =>
                 {
-                    b.Navigation("Employees");
+                    b.Navigation("EmployeeAssignments");
+                });
+
+            modelBuilder.Entity("ConstructionOrganizations.Models.Employee", b =>
+                {
+                    b.Navigation("BrigadeMemberships");
+
+                    b.Navigation("EmployeeAssignments");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.EmployeeType", b =>
@@ -763,14 +732,15 @@ namespace ConstructionOrganizations.Migrations
                     b.Navigation("Employees");
                 });
 
-            modelBuilder.Entity("ConstructionOrganizations.Models.Equipment", b =>
-                {
-                    b.Navigation("EquipmentObjectAssignments");
-                });
-
             modelBuilder.Entity("ConstructionOrganizations.Models.Object", b =>
                 {
-                    b.Navigation("EquipmentObjectAssignments");
+                    b.Navigation("Attributes");
+
+                    b.Navigation("MaterialEstimates");
+
+                    b.Navigation("MaterialUsages");
+
+                    b.Navigation("WorkSchedules");
                 });
 
             modelBuilder.Entity("ConstructionOrganizations.Models.ObjectType", b =>
@@ -785,8 +755,6 @@ namespace ConstructionOrganizations.Migrations
 
             modelBuilder.Entity("ConstructionOrganizations.Models.WorkSchedule", b =>
                 {
-                    b.Navigation("BrigadeWorkAssignments");
-
                     b.Navigation("MaterialUsages");
                 });
 

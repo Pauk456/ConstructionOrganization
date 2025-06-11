@@ -1,25 +1,12 @@
-﻿namespace ConstructionOrganizations.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class BrigadeMember
-{
-    public int EmployeeId { get; set; }
-    public Employee Employee { get; set; }
-    public int BrigadeId { get; set; }
-    public Brigade Brigade { get; set; }
-}
-
-public class EmployeeAssignment
-{
-    public int EmployeeId { get; set; }
-    public Employee Employee { get; set; }
-    public int ProjectId { get; set; }
-    public ConstructionProject Project { get; set; }
-}
+namespace ConstructionOrganizations.Models;
     
 public class BrigadeWorkAssignment
 {
+    [Key]
+    public int Id { get; set; }
     public int BrigadeId { get; set; }
-
     public Brigade Brigade { get; set; }
     public int WorkScheduleId { get; set; }
     public WorkSchedule WorkSchedule { get; set; }
@@ -27,12 +14,15 @@ public class BrigadeWorkAssignment
     public DateTime CompletedDate { get; set; }
 }
 
-public class EquipmentAssignment
+public class EquipmentObjectAssignment
 {
+    [Key]
+    public int Id { get; set; }
     public int EquipmentId { get; set; }
-    public Employee Employee{ get; set; }
+    public Equipment Equipment { get; set; }
     public int ObjectId { get; set; }
     public Object Object { get; set; }
+    public int count { get; set; }
     public DateTime AssignedDate { get; set; }
     public DateTime ReturnedDate { get; set; }
 }

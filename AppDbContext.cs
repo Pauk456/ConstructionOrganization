@@ -1,5 +1,6 @@
 ﻿using ConstructionOrganizations.Models;
 using Microsoft.EntityFrameworkCore;
+using Object = ConstructionOrganizations.Models.Object;
 
 
 namespace ConstructionOrganizations;
@@ -28,20 +29,35 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Brigade>()
-            .HasMany(b => b.Members)
-            .WithOne(m => m.Brigade)
+        modelBuilder.Entity<Employee>()
+            .HasOne(b => b.Brigade)
+            .WithMany(m => m.Members)
             .HasForeignKey(m => m.BrigadeId);
 
         modelBuilder.Entity<Employee>()
-            .HasMany(e => e.BrigadeMemberships)
-            .WithOne(m => m.Employee)
-            .HasForeignKey(m => m.EmployeeId);
-
-        modelBuilder.Entity<Employee>()
-            .HasMany(e => e.EmployeeAssignments)
-            .WithOne(m => m.Employee)
+            .HasOne(e => e.ConstructionProject)
+            .WithMany(m => m.Employees)
             .HasForeignKey(m => m.ProjectId);
+
+        modelBuilder.Entity<Brigade>()
+            .HasMany(e => e.BrigadeWorkAssignments)
+            .WithOne(m => m.Brigade)
+            .HasForeignKey(m => m.BrigadeId);
+
+        modelBuilder.Entity<WorkSchedule>()
+            .HasMany(e => e.BrigadeWorkAssignments)
+            .WithOne(m => m.WorkSchedule)
+            .HasForeignKey(m => m.WorkScheduleId);
+
+        modelBuilder.Entity<Equipment>()
+            .HasMany(e => e.EquipmentObjectAssignments)
+            .WithOne(m => m.Equipment)
+            .HasForeignKey(m => m.EquipmentId);
+
+        modelBuilder.Entity<Object>()
+            .HasMany(e => e.EquipmentObjectAssignments)
+            .WithOne(m => m.Object)
+            .HasForeignKey(m => m.ObjectId);
 
         modelBuilder.Entity<ConstructionOrganization>().HasData(
             new ConstructionOrganization { Id = 1, Name = "Организация Тест" }

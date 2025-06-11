@@ -57,8 +57,7 @@ public class ConstructionProject
 
     [ForeignKey("DepartmentId")]
     public ConstructionDepartment? Department { get; set; }
-    public ICollection<EmployeeAssignment> EmployeeAssignments { get; set; } = new List<EmployeeAssignment>();
-
+    public ICollection<Employee> Employees { get; set; } = new List<Employee>();
 }
 
 [Table("EmployeeTypes")]
@@ -123,8 +122,18 @@ public class Employee
     [ForeignKey("PositionId")]
     public Position? Position { get; set; }
 
-    public ICollection<BrigadeMember> BrigadeMemberships { get; set; } = new List<BrigadeMember>();
-    public ICollection<EmployeeAssignment> EmployeeAssignments { get; set; } = new List<EmployeeAssignment>();
+
+    [Column("ProjectId")]
+    public int? ProjectId { get; set; }
+
+    [ForeignKey("ProjectId")]
+    public ConstructionProject? ConstructionProject { get; set; }
+
+    [Column("BrigadeId")]
+    public int? BrigadeId { get; set; }
+
+    [ForeignKey("BrigadeId")]
+    public Brigade? Brigade { get; set; }
 }
 
 [Table("ObjectTypes")]
@@ -173,10 +182,16 @@ public class Object
     [StringLength(50)]
     public string? Status { get; set; }
 
-    public ICollection<ObjectAttribute> Attributes { get; set; } = new List<ObjectAttribute>();
-    public ICollection<WorkSchedule> WorkSchedules { get; set; } = new List<WorkSchedule>();
-    public ICollection<MaterialEstimate> MaterialEstimates { get; set; } = new List<MaterialEstimate>();
-    public ICollection<MaterialUsage> MaterialUsages { get; set; } = new List<MaterialUsage>();
+    [Column("Customer")]
+    [StringLength(100)]
+    public string? Customer { get; set; }
+
+    public ICollection<EquipmentObjectAssignment> EquipmentObjectAssignments { get; set; } = new List<EquipmentObjectAssignment>();
+
+    //public ICollection<ObjectAttribute> Attributes { get; set; } = new List<ObjectAttribute>();
+    //public ICollection<WorkSchedule> WorkSchedules { get; set; } = new List<WorkSchedule>();
+    //public ICollection<MaterialEstimate> MaterialEstimates { get; set; } = new List<MaterialEstimate>();
+    //public ICollection<MaterialUsage> MaterialUsages { get; set; } = new List<MaterialUsage>();
 }
 
 [Table("Brigades")]
@@ -186,8 +201,8 @@ public class Brigade
     [Column("Id")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-
-    public ICollection<BrigadeMember> Members { get; set; } = new List<BrigadeMember>();
+    public ICollection<Employee> Members { get; set; } = new List<Employee>();
+    public ICollection<BrigadeWorkAssignment> BrigadeWorkAssignments { get; set; } = new List<BrigadeWorkAssignment>();
 }
 
 [Table("ObjectAttributes")]
@@ -265,6 +280,7 @@ public class WorkSchedule
     public DateTime? ActualEndDate { get; set; }
 
     public ICollection<MaterialUsage> MaterialUsages { get; set; } = new List<MaterialUsage>();
+    public ICollection<BrigadeWorkAssignment> BrigadeWorkAssignments { get; set; } = new List<BrigadeWorkAssignment>();
 }
 
 [Table("MaterialEstimates")]
@@ -343,4 +359,7 @@ public class Equipment
     [Required]
     [Column("EquipmentCount")]
     public int EquipmentCount { get; set; }
+
+    public ICollection<EquipmentObjectAssignment> EquipmentObjectAssignments { get; set; } = new List<EquipmentObjectAssignment>();
+
 }
