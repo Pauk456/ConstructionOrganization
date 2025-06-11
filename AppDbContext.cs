@@ -59,6 +59,21 @@ public class AppDbContext : DbContext
             .WithOne(m => m.Object)
             .HasForeignKey(m => m.ObjectId);
 
+        modelBuilder.Entity<ConstructionOrganization>()
+           .HasMany(b => b.Departments)
+           .WithOne(m => m.Organization)
+           .HasForeignKey(m => m.OrganizationId);
+
+        modelBuilder.Entity<ConstructionDepartment>()
+           .HasMany(b => b.Projects)
+           .WithOne(m => m.Department)
+           .HasForeignKey(m => m.DepartmentId);
+
+
+
+
+
+
         modelBuilder.Entity<ConstructionOrganization>().HasData(
             new ConstructionOrganization { Id = 1, Name = "Организация Тест" }
         );

@@ -16,6 +16,7 @@ public class ConstructionOrganization
     [Column("Name")]
     [StringLength(255)]
     public string Name { get; set; } = null!;
+    public ICollection<ConstructionDepartment> Departments { get; set; } = new List<ConstructionDepartment>();
 }
 
 [Table("ConstructionDepartments")]
