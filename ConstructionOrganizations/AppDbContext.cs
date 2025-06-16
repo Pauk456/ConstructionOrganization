@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Object = ConstructionOrganizations.Models.Object;
 
-
 namespace ConstructionOrganizations;
 
 public class AppDbContext : DbContext
