@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход в систему</title>
+</head>
+<body>
+
+    <h2>Авторизация</h2>
+
+    <label for="login">Логин:</label><br>
+    <input type="text" id="login"><br><br>
+
+    <label for="password">Пароль:</label><br>
+    <input type="password" id="password"><br><br>
+
+    <button onclick="authorization()">Войти</button>
+
+    <script>
+        async function authorization() {
+        const login = document.getElementById("login").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("http://localhost:5001/api/Authorization/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(
+                {
+                    Login: login,
+                    Password: password
+                })
+        });
+
+        if (res.ok) {
+            alert("Вы успешно вошли!");
+
+            const data = await res.json();
+            sessionStorage.setItem("auth_token", data.access_token);
+
+            window.location.href = "http://localhost:5000/entity.html";
+        } else {
+            alert("Ошибка входа");
+        }
+    }
+    </script>
+
+</body>
+</html>

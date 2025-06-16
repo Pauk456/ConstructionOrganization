@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход в систему</title>
+</head>
+<body>
+
+    <h2>Регистрация</h2>
+
+    <label for="login">Логин:</label><br>
+    <input type="text" id="login"><br><br>
+
+    <label for="password">Пароль:</label><br>
+    <input type="password" id="password"><br><br>
+
+    <label for="Rpassword">Повторите пароль:</label><br>
+    <input type="password" id="Rpassword"><br><br>
+
+    <button onclick="registration()">Войти</button>
+
+    <script>
+        async function registration() {
+            const login = document.getElementById("login").value;
+            const password = document.getElementById("password").value;
+            const Rpassword = document.getElementById("Rpassword").value;
+
+            if (password != Rpassword)
+            {
+                alert("Пароли не совпадают!");
+                return;
+            }
+
+            const res = await fetch("http://localhost:5001/api/Authorization/registration", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(
+                    {
+                        Login: login,
+                        Password: password
+                    })
+            });
+
+            if (res.ok) {
+                alert("Вы успешно зарегистрировались!");
+
+                window.location.href = "http://localhost:5000/entity.html";
+
+            } else {
+                alert("Ошибка");
+            }
+        }
+    </script>
+
+</body>
+</html>

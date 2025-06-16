@@ -2,94 +2,70 @@
 <html>
 <head>
     <title>CRUD: Employee</title>
-    <style>
-        .hidden {
-            display: none;
-        }
-
-        #result {
-            margin-top: 20px;
-            background: #fff;
-            padding: 15px;
-            border: 1px solid #ccc;
-        }
-    </style>
 </head>
 <body>
+    <button onclick="registration()">Регистрация</button>
+    <button onclick="authorization()">Авторизироваться</button>
 
-    <h2>CRUD для: Employee</h2>
-
-    <button onclick="show('create')">Добавить</button>
-    <button onclick="show('get')">Получить</button>
-    <button onclick="show('update')">Обновить</button>
-    <button onclick="show('delete')">Удалить</button>
-
-    <div id="get" class="hidden">
-        <h3>Получить</h3>
-        <input id="getId" placeholder="ID" type="number">
-        <button onclick="get()">Получить</button>
+    <div id="createForm">
+        <h2>Добавить нового сотрудника</h2>
+        <input id="newName" placeholder="Имя"><br><br>
+        <input id="newLastName" placeholder="Фамилия"><br><br>
+        <input id="newEmployeeTypeId" placeholder="ID типа сотрудника"><br><br>
+        <input id="newPositionId" placeholder="ID должности"><br><br>
+        <input id="newProjectId" placeholder="ID проекта"><br><br>
+        <input id="newBrigadeId" placeholder="ID бригады"><br><br>
+        <button onclick="create()">Сохранить</button>
     </div>
 
-    <div id="create" class="hidden">
-        <h3>Добавить сотрудника</h3>
-        <input id="cnewName" placeholder="Имя"><br><br>
-        <input id="cnewLastName" placeholder="Фамилия"><br><br>
-        <input id="cEmployeeTypeId" placeholder="ID типа сотрудника"><br><br>
-        <input id="cPositionId" placeholder="ID должности"><br><br>
-        <input id="cProjectId" placeholder="ID проекта"><br><br>
-        <input id="cBrigadeId" placeholder="ID бригады"><br><br>
-        <button onclick="create()">Отправить</button>
-    </div>
-
-    <div id="update" class="hidden">
-        <h3>Обновить</h3>
-        <input id="updId" placeholder="ID" type="number"><br><br>
-        <input id="uName" placeholder="Имя"><br><br>
-        <input id="uLastName" placeholder="Фамилия"><br><br>
-        <input id="uEmployeeTypeId" placeholder="EmployeeTypeId"><br><br>
-        <input id="uPositionId" placeholder="PositionId"><br><br>
-        <input id="uProjectId" placeholder="ProjectId"><br><br>
-        <input id="uBrigadeId" placeholder="BrigadeId"><br><br>
-        <button onclick="update()">Обновить</button>
-    </div>
-
-    <div id="delete" class="hidden">
-        <h3>Удалить</h3>
-        <input id="delId" placeholder="ID" type="number"><br><br>
-        <button onclick="remove()">Удалить</button>
-    </div>
-
-    <div id="result"> Результат </div>
+    <h2>Список сотрудников</h2>
+    <div id="employeesList"></div>
 
     <script>
-        const api = "/api/employees";
+        const api = "http://localhost:5000/api";
 
-        function show(id) {
-            document.querySelectorAll("div[id]:not(#result)").forEach(d => d.classList.add("hidden"));
-            document.getElementById(id).classList.remove("hidden");
+        async function authentication() {
+            window.location.href = "http://localhost:5000/login.html";
         }
 
-        async function get() {
-            const id = document.getElementById("getId").value;
-            const resultDiv = document.getElementById("result");
-            const response = await fetch(`/api/employees/get?id=${id}`);
-            const data = await response.json();
-            resultDiv.textContent = JSON.stringify(data, null, 2);
+        async function registration() {
+            window.location.href = "http://localhost:5000/registration.html";
+        }
+
+        async function loadEmployees() {
+            const res = await fetch(`${api}/employees/all?count=20`);
+            const employees = await res.json();
+            const list = document.getElementById("employeesList");
+            list.innerHTML = "";
+
+            employees.forEach(emp => {
+                const div = document.createElement("div");
+
+                div.innerHTML = `
+                        <pre>${JSON.stringify(emp, null, 2)}</pre>
+                        <button onclick='edit(${parseInt(emp.id) })'>Редактировать</button>
+                        <button onclick='remove(${parseInt(emp.id)})'>Удалить</button>
+                    `;
+
+                list.appendChild(div);
+            });
         }
 
         async function create() {
-            const name = document.getElementById("cnewName").value;
-            const lastName = document.getElementById("cnewLastName").value;
-            const employeeTypeId = parseInt(document.getElementById("cEmployeeTypeId").value) || null;
-            const positionId = parseInt(document.getElementById("cPositionId").value) || null;
-            const projectId = parseInt(document.getElementById("cProjectId").value) || null;
-            const brigadeId = parseInt(document.getElementById("cBrigadeId").value) || null;
+            const name = document.getElementById("newName").value;
+            const lastName = document.getElementById("newLastName").value;
+            const employeeTypeId = parseInt(document.getElementById("newEmployeeTypeId").value) || null;
+            const positionId = parseInt(document.getElementById("newPositionId").value) || null;
+            const projectId = parseInt(document.getElementById("newProjectId").value) || null;
+            const brigadeId = parseInt(document.getElementById("newBrigadeId").value) || null;
+            const token = sessionStorage.getItem("auth_token");
 
-            const resultDiv = document.getElementById("result");
-
-            const res = await fetch(`${api}/post`, {
+            await fetch(`${api}/employees/post`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     FirstName: name,
                     LastName: lastName,
@@ -100,36 +76,23 @@
                 })
             });
 
-            const data = await res.json();
-            resultDiv.textContent = JSON.stringify(data, null, 2);
-   
+            loadEmployees();
         }
 
-        async function update() {
-            const id = document.getElementById("updId").value;
-            const name = document.getElementById("updName").value;
-            const lastName = document.getElementById("updLastName").value;
-            const resultDiv = document.getElementById("result");
+        async function remove(id) {
+            var res = await fetch(`${api}/delete?id=${id}&entity=employees`,
+                {
+                    method: "DELETE"
+                });
 
-            const res = await fetch(`${api}/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ Id: id, FirstName: name, LastName: lastName, EmployeeTypeId: 1, PositionId: 1, ProjectId: 1 })
-            });
-
-            resultDiv.textContent = "Сотрудник обновлён";
+            loadEmployees();
         }
 
-        async function remove() {
-            const id = document.getElementById("delId").value;
-            const resultDiv = document.getElementById("result");
-
-            const res = await fetch(`api/delete?id=${id}&entity=employees`, {
-                method: "DELETE"
-            });
-
-            resultDiv.textContent = "Сотрудник удалён";
+        async function edit(id) {
+            alert("Редактирование для ID: " + id);
         }
+
+        window.onload = loadEmployees;
     </script>
 
 </body>

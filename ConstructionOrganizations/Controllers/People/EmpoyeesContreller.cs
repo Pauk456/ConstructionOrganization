@@ -1,4 +1,5 @@
 ﻿using ConstructionOrganizations.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
@@ -42,6 +43,7 @@ public class EmployeesController : ControllerBase
         return Ok(dto);
     }
 
+    [Authorize]
     [HttpPost("post")]
     public async Task<ActionResult> Create([FromBody] Employee employee)
     {
@@ -74,5 +76,13 @@ public class EmployeesController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok();
+    }
+
+    [HttpGet("all")]
+    public async Task<ActionResult> GetAllEmployee(int count = 2)
+    {
+        var employees = await _context.Employees.Take(count).ToArrayAsync();
+
+        return Ok(employees);
     }
 }
