@@ -3,11 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ConstructionOrganizations.Services.People;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<BrigadeService>();
+builder.Services.AddScoped<EmployeeService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

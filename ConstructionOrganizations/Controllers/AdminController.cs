@@ -58,53 +58,6 @@ public class AdminController : ControllerBase
             return BadRequest(new { Error = ex.Message });
         }
     }
-
-    //[HttpGet("init")]
-    //public async Task<IActionResult> Init()
-    //{
-
-    //    var org = new ConstructionOrganization { Name = "Организация Тест" };
-    //    _context.Organizations.Add(org);
-    //    await _context.SaveChangesAsync();
-
-    //    var dept = new ConstructionDepartment
-    //    {
-    //        Name = "Департамент А",
-    //        OrganizationId = org.Id
-    //    };
-    //    _context.Departments.Add(dept);
-    //    await _context.SaveChangesAsync();
-
-    //    var project = new ConstructionProject
-    //    {
-    //        Location = "Новосибирск",
-    //        DepartmentId = dept.Id
-    //    };
-    //    _context.Projects.Add(project);
-    //    await _context.SaveChangesAsync();
-
-    //    var headOfProjectPos = new Position { Name = "Начальник участка" };
-    //    _context.Positions.Add(headOfProjectPos);
-    //    await _context.SaveChangesAsync();
-
-    //    var enginerType = new EmployeeType { TypeName = "Инженер" };
-    //    _context.EmployeeTypes.Add(enginerType);
-    //    await _context.SaveChangesAsync();
-
-    //    var employee = new Employee
-    //    {
-    //        FirstName = "Михаил",
-    //        LastName = "Петрович",
-    //        PositionId = headOfProjectPos.Id,
-    //        ProjectId = project.Id,
-    //        EmployeeTypeId = enginerType.Id
-    //    };
-    //    _context.Employees.Add(employee);
-    //    await _context.SaveChangesAsync();
-
-    //    return Ok("Seed выполнен");
-    //}
-
     [HttpGet("init")]
     public async Task<IActionResult> Init()
     {

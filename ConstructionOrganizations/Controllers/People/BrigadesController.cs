@@ -6,44 +6,34 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ConstructionOrganizations.Controllers.People;
 
+using ConstructionOrganizations.Services.People;
+using Microsoft.AspNetCore.Mvc;
+
+
 [ApiController]
 [Route("api/[controller]")]
 public class BrigadesController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly BrigadeService _brigadeService;
 
-    public BrigadesController(AppDbContext context) => _context = context;
+    public BrigadesController(BrigadeService brigadeService)
+    {
+        _brigadeService = brigadeService;
+    }
 
     [HttpPost("post")]
     public async Task<ActionResult> Create([FromBody] Brigade brigade)
     {
-        _context.Brigades.Add(brigade);
-        await _context.SaveChangesAsync();
-        return Ok(brigade);
+        var createdBrigade = await _brigadeService.CreateAsync(brigade);
+        return Ok(createdBrigade);
     }
 
     [HttpGet("get")]
     public async Task<ActionResult> GetById(int id)
     {
-        var brigade = await _context.Brigades
-            .Include(b => b.Members)
-            .Include(b => b.BrigadeWorkAssignments)
-            .ThenInclude(bwa => bwa.WorkSchedule)
-            .FirstOrDefaultAsync(b => b.Id == id);
+        var result = await _brigadeService.GetByIdAsync(id);
+        if (result == null) return NotFound();
 
-        if (brigade == null) return NotFound();
-
-        var memberIds = brigade.Members.Select(m => m.Id).ToList();
-        var workScheduleIds = brigade.BrigadeWorkAssignments.Select(bwa => bwa.WorkScheduleId).ToList();
-
-        var dto = new
-        {
-            Id = brigade.Id,
-            Members = memberIds,
-            WorkScheduleIds = workScheduleIds
-        };
-
-        return Ok(dto);
+        return Ok(result);
     }
-
 }

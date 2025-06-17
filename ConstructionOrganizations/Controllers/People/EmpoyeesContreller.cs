@@ -1,88 +1,57 @@
 ﻿using ConstructionOrganizations.Models;
+using ConstructionOrganizations.DTOs;
+using ConstructionOrganizations.Services.People;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
-namespace ConstructionOrganizations.Controllers.People;
-
-[ApiController]
-[Route("api/[controller]")]
-public class EmployeesController : ControllerBase
+namespace ConstructionOrganizations.Controllers.People
 {
-    private readonly AppDbContext _context;
-
-    public EmployeesController(AppDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EmployeesController : ControllerBase
     {
-        _context = context;
-    }
-
-    [HttpGet("get")]
-    public async Task<ActionResult> GetById(int id)
-    {
-        var employee = await _context.Employees
-            .Include(e => e.ConstructionProject)
-            .Include(e => e.Brigade)
-            .Include(e => e.EmployeeType)
-            .Include(e => e.Position)
-            .FirstOrDefaultAsync(e => e.Id == id);
-
-        if (employee == null) return NotFound();
-
-        var dto = new
+        private readonly EmployeeService _employeeService;
+        public EmployeesController(EmployeeService employeeService)
         {
-            Id = employee.Id,
-            FirstName = employee.FirstName,
-            LastName = employee.LastName,
-            ProjectId = employee.ConstructionProject?.Id,
-            BrigadeId = employee.Brigade?.Id,
-            EmployeeTypeId = employee.EmployeeType?.Id,
-            PositionId = employee.Position?.Id
-        };
-
-        return Ok(dto);
-    }
-
-    [Authorize]
-    [HttpPost("post")]
-    public async Task<ActionResult> Create([FromBody] Employee employee)
-    {
-        _context.Employees.Add(employee);
-
-        await _context.SaveChangesAsync();
-        return Ok(employee);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(int id, [FromBody] Employee employee)
-    {
-        if (id != employee.Id) return BadRequest();
-
-        var existingEmployee = await _context.Employees
-            .FirstOrDefaultAsync(e => e.Id == id);
-
-        if (existingEmployee == null)
-        {
-            return NotFound("Сотрудник не найден.");
+            _employeeService = employeeService;
         }
 
-        existingEmployee.FirstName = employee.FirstName;
-        existingEmployee.LastName = employee.LastName;
-        existingEmployee.EmployeeTypeId = employee.EmployeeTypeId;
-        existingEmployee.PositionId = employee.PositionId;
-        existingEmployee.ProjectId = employee.ProjectId;
-        existingEmployee.BrigadeId = employee.Brigade?.Id;
+        [HttpGet("get")]
+        public async Task<ActionResult<EmployeeDto>> GetById(int id)
+        {
+            var dto = await _employeeService.GetByIdAsync(id);
+            if (dto == null) return NotFound();
 
-        await _context.SaveChangesAsync();
+            return Ok(dto);
+        }
 
-        return Ok();
-    }
+        [Authorize]
+        [HttpPost("post")]
+        public async Task<ActionResult<Employee>> Create([FromBody] Employee employee)
+        {
+            var createdEmployee = await _employeeService.CreateAsync(employee);
+            return Ok(createdEmployee);
+        }
 
-    [HttpGet("all")]
-    public async Task<ActionResult> GetAllEmployee(int count = 2)
-    {
-        var employees = await _context.Employees.Take(count).ToArrayAsync();
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, [FromBody] Employee employee)
+        {
+            try
+            {
+                await _employeeService.UpdateAsync(id, employee);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
 
-        return Ok(employees);
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll(int count = 2)
+        {
+            var employees = await _employeeService.GetAllAsync(count);
+            return Ok(employees);
+        }
     }
 }

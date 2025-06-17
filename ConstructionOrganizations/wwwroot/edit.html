@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Обновление Employees id = ${id}</title>
+</head>
+<body>
+
+    <div>
+        <input id="newName" placeholder="Имя"><br><br>
+        <input id="newLastName" placeholder="Фамилия"><br><br>
+        <input id="newEmployeeTypeId" placeholder="ID типа сотрудника"><br><br>
+        <input id="newPositionId" placeholder="ID должности"><br><br>
+        <input id="newProjectId" placeholder="ID проекта"><br><br>
+        <input id="newBrigadeId" placeholder="ID бригады"><br><br>
+        <button onclick="edit()">Обновить</button>
+    </div>
+
+    <script>
+        const id = sessionStorage.getItem("idEdit");
+
+        async function edit() {
+            const name = document.getElementById("newName").value;
+            const lastName = document.getElementById("newLastName").value;
+            const employeeTypeId = parseInt(document.getElementById("newEmployeeTypeId").value) || null;
+            const positionId = parseInt(document.getElementById("newPositionId").value) || null;
+            const projectId = parseInt(document.getElementById("newProjectId").value) || null;
+            const brigadeId = parseInt(document.getElementById("newBrigadeId").value) || null;
+            const token = sessionStorage.getItem("auth_token");
+
+            await fetch(`http://localhost:5000/api/employees/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    FirstName: name,
+                    LastName: lastName,
+                    EmployeeTypeId: employeeTypeId,
+                    PositionId: positionId,
+                    ProjectId: projectId,
+                    BrigadeId: brigadeId
+                })
+            });
+
+            window.location.href = "http://localhost:5000/entity.html";
+        }
+
+    </script>
+
+</body>
+</html>
